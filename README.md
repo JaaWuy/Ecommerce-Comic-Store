@@ -62,9 +62,12 @@ To run this project locally, you will need:
 
 ## 📸 Screenshots
 *(Add screenshots of your application here to make your README more visually appealing)*
-- **Home Page**: `![Home](link-to-image)`
-- **Shopping Cart**: `![Cart](link-to-image)`
-- **Admin Dashboard**: `![Admin](link-to-image)`
+- **Home Page**: `![Home](<img width="1920" height="1026" alt="image" src="https://github.com/user-attachments/assets/9cdfad75-d027-4d9a-96d1-92a4404f73a2" />
+)`
+- **Shopping Cart**: `![Cart](<img width="1920" height="1026" alt="image" src="https://github.com/user-attachments/assets/9193d800-b337-4362-8b0f-0f818190a8c9" />
+)`
+- **Admin Dashboard**: `![Admin](<img width="1920" height="1029" alt="image" src="https://github.com/user-attachments/assets/3883ba21-d14e-4c23-8c1f-1885a5ce4581" />
+)`
 
 ## 🎯 Future Enhancements
 - [ ] Implement Payment Gateway Integration (Stripe/PayPal/VNPay).
