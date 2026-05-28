@@ -1,0 +1,53 @@
+@model DoAnWeb.Models.ApplicationUser
+@{
+    ViewBag.Title = "Xóa Người Dùng";
+}
+
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa Người Dùng
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> 
+            <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa người dùng này? Hành động này không thể hoàn tác!
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">Email:</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">Họ Tên:</dt>
+            <dd class="col-sm-9">@Model.FullName</dd>
+
+            <dt class="col-sm-3">Số Điện Thoại:</dt>
+            <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+            <dt class="col-sm-3">Địa Chỉ:</dt>
+            <dd class="col-sm-9">@Model.Address</dd>
+
+            <dt class="col-sm-3">Vai Trò:</dt>
+            <dd class="col-sm-9">
+                @foreach (var role in ViewBag.UserRoles)
+                {
+                    <span class="badge bg-primary">@role</span>
+                }
+            </dd>
+        </dl>
+
+        @using (Html.BeginForm("Delete", "Users", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.Id)
+
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Hủy
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </div>
+        }
+    </div>
+</div>

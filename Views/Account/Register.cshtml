@@ -1,0 +1,317 @@
+@model DoAnWeb.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Đăng ký";
+}
+
+<style>
+    .register-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        padding: 40px 20px;
+    }
+
+    .register-card {
+        width: 100%;
+        max-width: 520px;
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        animation: slideUp 0.5s ease;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .register-header {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        padding: 35px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @@keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .register-header i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-header h2 {
+        font-size: 26px;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-header p {
+        margin: 10px 0 0;
+        opacity: 0.9;
+        font-size: 14px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .register-body {
+        padding: 35px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .form-group-custom {
+        margin-bottom: 20px;
+    }
+
+    .form-group-custom.full-width {
+        grid-column: span 2;
+    }
+
+    .form-group-custom label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .form-group-custom label i {
+        margin-right: 6px;
+        color: #11998e;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        padding: 14px 18px;
+        padding-left: 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 14px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .input-wrapper input:focus {
+        border-color: #11998e;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(17, 153, 142, 0.15);
+        outline: none;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 16px;
+    }
+
+    .input-wrapper input:focus + i {
+        color: #11998e;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(17, 153, 142, 0.4);
+    }
+
+    .register-footer {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .register-footer p {
+        color: #64748b;
+        margin: 0;
+    }
+
+    .register-footer a {
+        color: #11998e;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .register-footer a:hover {
+        color: #38ef7d;
+        text-decoration: underline;
+    }
+
+    .validation-error {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .validation-error:not(:empty) {
+        display: flex;
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+        border: none;
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        color: #dc2626;
+    }
+
+    @@media (max-width: 576px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        .form-group-custom.full-width {
+            grid-column: span 1;
+        }
+    }
+</style>
+
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <i class="fas fa-user-plus"></i>
+            <h2>Tạo tài khoản mới</h2>
+            <p>Tham gia cộng đồng yêu sách cùng chúng tôi</p>
+        </div>
+        <div class="register-body">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert-custom" })
+
+                <div class="form-row">
+                    <div class="form-group-custom full-width">
+                        <label><i class="fas fa-user"></i> Họ và tên</label>
+                        <div class="input-wrapper">
+                            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Nhập họ và tên đầy đủ" })
+                            <i class="fas fa-user"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "validation-error" })
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label><i class="fas fa-envelope"></i> Email</label>
+                        <div class="input-wrapper">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "example@email.com", type = "email" })
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "validation-error" })
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label><i class="fas fa-phone"></i> Số điện thoại</label>
+                        <div class="input-wrapper">
+                            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "0xxx xxx xxx" })
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "validation-error" })
+                    </div>
+
+                    <div class="form-group-custom full-width">
+                        <label><i class="fas fa-map-marker-alt"></i> Địa chỉ</label>
+                        <div class="input-wrapper">
+                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Nhập địa chỉ giao hàng" })
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "validation-error" })
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label><i class="fas fa-lock"></i> Mật khẩu</label>
+                        <div class="input-wrapper">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Tối thiểu 6 ký tự" })
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-error" })
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label><i class="fas fa-lock"></i> Xác nhận mật khẩu</label>
+                        <div class="input-wrapper">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Nhập lại mật khẩu" })
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "validation-error" })
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register">
+                    <i class="fas fa-user-plus"></i>
+                    Đăng ký tài khoản
+                </button>
+
+                <div class="register-footer">
+                    <p>Đã có tài khoản? <a href="@Url.Action("Login", "Account")">Đăng nhập ngay</a></p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+}

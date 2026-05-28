@@ -1,0 +1,188 @@
+@model DoAnWeb.Models.Truyen
+@{
+    ViewBag.Title = Model.TenTruyen;
+}
+
+<style>
+    .text-gradient {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    .btn-gradient {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    .btn-outline-gradient {
+        background: white;
+        border: 2px solid transparent;
+        background-image: linear-gradient(white, white), var(--primary-gradient);
+        background-origin: border-box;
+        background-clip: content-box, border-box;
+        box-shadow: 2px 1000px 1px #fff inset;
+        color: var(--primary-color);
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .btn-outline-gradient:hover {
+        box-shadow: none;
+        color: white;
+        background: var(--primary-gradient);
+        border-color: transparent;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg) !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card shadow-lg border-0">
+            <img src="@Model.imgUrl" class="card-img-top" alt="@Model.TenTruyen" style="height: 600px; object-fit: contain;">
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a href="@Url.Action("Index")">Sản phẩm</a></li>
+                        <li class="breadcrumb-item active">@Model.TenTruyen</li>
+                    </ol>
+                </nav>
+
+                <h2 class="mb-3 fw-bold">@Model.TenTruyen</h2>
+                
+                <div class="mb-3">
+                    <span class="badge bg-secondary fs-6">
+                        <i class="fas fa-tag"></i> @Model.TheLoai.TenTL
+                    </span>
+                </div>
+
+                <div class="mb-3">
+                    <span class="text-muted">Mã sản phẩm:</span>
+                    <strong>@Model.MaTruyen</strong>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-gradient display-6">@Model.GiaBan.ToString("N0")đ</h3>
+                </div>
+
+                <div class="mb-4">
+                    <p class="mb-2">
+                        <i class="fas fa-box text-success"></i>
+                        <strong>Tình trạng:</strong>
+                        @if (Model.SoLuongTon > 0)
+                        {
+                            <span class="text-success">Còn hàng (@Model.SoLuongTon sản phẩm)</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">Hết hàng</span>
+                        }
+                    </p>
+                </div>
+
+                @if (Model.SoLuongTon > 0)
+                {
+                    <div class="mb-4">
+                        @if (Request.IsAuthenticated)
+                        {
+                            @Html.AntiForgeryToken()
+                            <div class="d-flex gap-3">
+                                <button class="btn btn-gradient btn-lg flex-grow-1 rounded-pill" onclick="addToCart('@Model.MaTruyen')">
+                                    <i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng
+                                </button>
+                                <button class="btn btn-outline-gradient btn-lg rounded-pill px-4" onclick="buyNow('@Model.MaTruyen')">
+                                    <i class="fas fa-bolt"></i> Mua ngay
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Login", "Account")" class="btn btn-gradient btn-lg w-100 rounded-pill">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập để mua hàng
+                            </a>
+                        }
+                    </div>
+                }
+
+                <div class="alert alert-light border shadow-sm">
+                    <h6 class="text-gradient"><i class="fas fa-info-circle"></i> Thông tin sản phẩm</h6>
+                    <ul class="mb-0">
+                        <li><i class="fas fa-check text-success me-2"></i>Giao hàng toàn quốc</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Thanh toán khi nhận hàng</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Đổi trả trong vòng 7 ngày</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Bảo hành chất lượng sản phẩm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sản phẩm liên quan -->
+@if (ViewBag.RelatedProducts != null && ((List<DoAnWeb.Models.Truyen>)ViewBag.RelatedProducts).Any())
+{
+    <div class="mt-5">
+        <h4 class="mb-4 text-gradient"><i class="fas fa-book"></i> Sản phẩm cùng thể loại</h4>
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var item in (List<DoAnWeb.Models.Truyen>)ViewBag.RelatedProducts)
+            {
+                <div class="col">
+                    <div class="card h-100 product-card shadow-sm border-0">
+                        <a href="@Url.Action("Detail", new { id = item.MaTruyen })">
+                            <img src="@item.imgUrl" class="card-img-top" alt="@item.TenTruyen" 
+                                 style="height: 250px; object-fit: cover;">
+                        </a>
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <a href="@Url.Action("Detail", new { id = item.MaTruyen })" class="text-dark text-decoration-none fw-bold">
+                                    @item.TenTruyen
+                                </a>
+                            </h6>
+                            <p class="card-text text-gradient fw-bold">@item.GiaBan.ToString("N0")đ</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function buyNow(maTruyen) {
+            // Thêm vào giỏ và chuyển đến trang thanh toán
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: { 
+                    maTruyen: maTruyen,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Checkout", "Cart")';
+                    } else {
+                        alert(response.message || 'Có lỗi xảy ra!');
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra!');
+                }
+            });
+        }
+    </script>
+}

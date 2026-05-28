@@ -1,0 +1,310 @@
+@{
+    ViewBag.Title = "Liên Hệ";
+}
+
+<style>
+    /* Social Media Buttons Styling */
+    .social-media-card .btn-social {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+        .social-media-card .btn-social::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: white;
+            transition: all 0.4s ease;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+
+        .social-media-card .btn-social:hover::before {
+            width: 100%;
+            height: 100%;
+        }
+
+        .social-media-card .btn-social i {
+            position: relative;
+            z-index: 1;
+            font-size: 24px;
+            transition: all 0.4s ease;
+        }
+
+        .social-media-card .btn-social:hover {
+            transform: translateY(-8px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+    /* Facebook */
+    .social-media-card .btn-facebook {
+        background: linear-gradient(135deg, #1877f2 0%, #0c63d4 100%);
+        color: white;
+    }
+
+        .social-media-card .btn-facebook:hover i {
+            color: #1877f2;
+            transform: rotate(360deg);
+        }
+
+    /* Instagram */
+    .social-media-card .btn-instagram {
+        background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        color: white;
+    }
+
+        .social-media-card .btn-instagram:hover i {
+            color: #e6683c;
+            transform: rotate(360deg);
+        }
+
+    /* YouTube */
+    .social-media-card .btn-youtube {
+        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+        color: white;
+    }
+
+        .social-media-card .btn-youtube:hover i {
+            color: #ff0000;
+            transform: rotate(360deg);
+        }
+
+    /* TikTok */
+    .social-media-card .btn-tiktok {
+        background: linear-gradient(135deg, #000000 0%, #333333 100%);
+        color: white;
+    }
+
+        .social-media-card .btn-tiktok:hover i {
+            color: #000000;
+            transform: rotate(360deg);
+        }
+
+    .social-links-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        justify-items: center;
+    }
+
+    .text-gradient {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    .bg-gradient-primary {
+        background: var(--primary-gradient) !important;
+    }
+    .btn-gradient {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+
+    @@media (max-width: 768px) {
+        .social-links-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+    }
+</style>
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h1 class="display-5 text-gradient mb-3">@ViewBag.PageHeading</h1>
+                    <p class="lead text-muted">@ViewBag.PageSubheading</p>
+                </div>
+
+                @if (ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <i class="fas fa-check-circle"></i> @ViewBag.SuccessMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-circle"></i> @ViewBag.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <h4 class="text-gradient mb-3">@ViewBag.FormTitle</h4>
+
+                @using (Html.BeginForm("Contact", "Pages", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label class="form-label">@ViewBag.NameLabel</label>
+                        <input type="text" name="name" class="form-control" placeholder="@ViewBag.NamePlaceholder" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@ViewBag.EmailLabel</label>
+                        <input type="email" name="email" class="form-control" placeholder="@ViewBag.EmailPlaceholder" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@ViewBag.PhoneLabel</label>
+                        <input type="tel" name="phone" class="form-control" placeholder="@ViewBag.PhonePlaceholder">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">@ViewBag.MessageLabel</label>
+                        <textarea name="message" class="form-control" rows="5" placeholder="@ViewBag.MessagePlaceholder" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient btn-lg w-100 rounded-pill">
+                        <i class="fas fa-paper-plane"></i> @ViewBag.SubmitButton
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-lg border-0 mb-3">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-info-circle"></i> @ViewBag.InfoTitle</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="text-gradient"><i class="fas fa-phone"></i> @ViewBag.PhoneTitle</h6>
+                <p class="mb-2"><strong>@ViewBag.PhoneNumber</strong></p>
+                <p class="text-muted small">@ViewBag.PhoneSupport</p>
+
+                <hr>
+
+                <h6 class="text-gradient"><i class="fas fa-envelope"></i> @ViewBag.EmailTitle</h6>
+                <p class="mb-2"><strong>@ViewBag.EmailAddress</strong></p>
+                <p class="text-muted small">@ViewBag.EmailResponse</p>
+
+                <hr>
+
+                <h6 class="text-gradient"><i class="fas fa-map-marker-alt"></i> @ViewBag.AddressTitle</h6>
+                <p class="mb-1">@ViewBag.CompanyAddress</p>
+                <p class="mb-1">@ViewBag.StreetAddress</p>
+                <p class="mb-2">@ViewBag.CityAddress</p>
+
+                <hr>
+
+                <h6 class="text-gradient"><i class="fas fa-clock"></i> @ViewBag.HoursTitle</h6>
+                <p class="mb-1">@ViewBag.MonToSat</p>
+                <p class="mb-1">@ViewBag.Sunday</p>
+                <p class="mb-0">@ViewBag.Holiday</p>
+            </div>
+        </div>
+
+        <div class="card shadow-lg border-0 social-media-card">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-share-alt"></i> @ViewBag.FollowTitle</h5>
+            </div>
+            <div class="card-body">
+                <div class="social-links-grid">
+                    <a href="https://www.facebook.com/MrBeast6000" target="_blank" class="btn-social btn-facebook" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="http://instagram.com/mrbeast/" target="_blank" class="btn-social btn-instagram" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/%40MrBeast" target="_blank" class="btn-social btn-youtube" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/%40mrbeast" target="_blank" class="btn-social btn-tiktok" title="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-gradient-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-question-circle"></i> @ViewBag.FAQTitle</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                @ViewBag.FAQ1Q
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                @ViewBag.FAQ1A
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                @ViewBag.FAQ2Q
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                @ViewBag.FAQ2A
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                @ViewBag.FAQ3Q
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                @ViewBag.FAQ3A
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                @ViewBag.FAQ4Q
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                @ViewBag.FAQ4A
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

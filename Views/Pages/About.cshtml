@@ -1,0 +1,162 @@
+@{
+    ViewBag.Title = "Giới Thiệu";
+}
+
+<style>
+    .text-gradient {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(102, 126, 234, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+        transition: all 0.3s ease;
+    }
+    .card:hover .feature-icon {
+        background: var(--primary-gradient);
+        transform: scale(1.1);
+    }
+    .card:hover .feature-icon i {
+        color: white !important;
+        -webkit-text-fill-color: white;
+    }
+    .about-section {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 40px;
+        box-shadow: var(--shadow-lg);
+    }
+</style>
+
+<div class="about-section">
+    <div class="text-center mb-5">
+        <h1 class="display-4 mb-3 text-gradient">@ViewBag.PageHeading</h1>
+        <p class="lead text-muted">@ViewBag.PageSubheading</p>
+        <div style="height: 4px; width: 80px; background: var(--primary-gradient); margin: 20px auto; border-radius: 2px;"></div>
+    </div>
+
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-12">
+            <h3 class="text-gradient mb-3">@ViewBag.CompanyName</h3>
+            <p class="fs-5 text-muted">@ViewBag.CompanyDescription</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="p-4 bg-light rounded-3 border-start border-4 border-primary">
+                <h3 class="text-gradient mb-3">@ViewBag.MissionTitle</h3>
+                <p class="fs-5 mb-0">@ViewBag.MissionDescription</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h3 class="text-gradient mb-4 text-center">@ViewBag.WhyTitle</h3>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="fas fa-check-circle text-primary me-2"></i> @ViewBag.Benefit1
+                        </li>
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="fas fa-check-circle text-primary me-2"></i> @ViewBag.Benefit2
+                        </li>
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="fas fa-check-circle text-primary me-2"></i> @ViewBag.Benefit3
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="fas fa-check-circle text-primary me-2"></i> @ViewBag.Benefit4
+                        </li>
+                        <li class="list-group-item bg-transparent border-0 ps-0">
+                            <i class="fas fa-check-circle text-primary me-2"></i> @ViewBag.Benefit5
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <h3 class="text-gradient mb-4 text-center">@ViewBag.CategoriesTitle</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-book fa-2x text-gradient"></i>
+                            </div>
+                            <h5 class="fw-bold">Manga</h5>
+                            <p class="text-muted mb-0">Truyện tranh Nhật Bản</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-book fa-2x text-gradient"></i>
+                            </div>
+                            <h5 class="fw-bold">Manhwa</h5>
+                            <p class="text-muted mb-0">Truyện tranh Hàn Quốc</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-book fa-2x text-gradient"></i>
+                            </div>
+                            <h5 class="fw-bold">Manhua</h5>
+                            <p class="text-muted mb-0">Truyện tranh Trung Quốc</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-book fa-2x text-gradient"></i>
+                            </div>
+                            <h5 class="fw-bold">Comics</h5>
+                            <p class="text-muted mb-0">Truyện tranh Mỹ/Âu</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-shadow">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-book fa-2x text-gradient"></i>
+                            </div>
+                            <h5 class="fw-bold">Webtoon</h5>
+                            <p class="text-muted mb-0">Truyện tranh Online</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="@Url.Action("Contact", "Pages")" class="btn btn-lg text-white px-5 rounded-pill" style="background: var(--primary-gradient); border: none;">
+            <i class="fas fa-envelope me-2"></i> @ViewBag.ContactButtonText
+        </a>
+    </div>
+</div>

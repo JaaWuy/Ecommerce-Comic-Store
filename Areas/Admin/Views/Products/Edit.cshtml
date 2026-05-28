@@ -1,0 +1,63 @@
+@model DoAnWeb.Models.Truyen
+@{
+    ViewBag.Title = "Sửa Sản Phẩm";
+}
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-edit"></i> Sửa Thông Tin Sản Phẩm
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Edit", "Products", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.MaTruyen)
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.TenTruyen, "Tên Sản Phẩm", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.TenTruyen, new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.MaTL, "Thể Loại", new { @class = "form-label" })
+                        @Html.DropDownListFor(m => m.MaTL, (SelectList)ViewBag.TheLoai, new { @class = "form-select", required = "required" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.GiaBan, "Giá Bán", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.GiaBan, new { @class = "form-control", type = "number", step = "1000", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.SoLuongTon, "Số Lượng Tồn", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.SoLuongTon, new { @class = "form-control", type = "number", required = "required" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.imgUrl, "URL Hình Ảnh", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.imgUrl, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay Lại
+                </a>
+                <button type="submit" class="btn btn-admin">
+                    <i class="fas fa-save"></i> Cập Nhật
+                </button>
+            </div>
+        }
+    </div>
+</div>

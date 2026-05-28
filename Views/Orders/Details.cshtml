@@ -1,0 +1,162 @@
+@model DoAnWeb.Models.Order
+@{
+    ViewBag.Title = "Chi Tiết Đơn Hàng";
+    var canCancel = Model.Status == "Chờ xử lý" || Model.Status == "Pending";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-file-invoice"></i> Chi Tiết Đơn Hàng #@Model.OrderId</h2>
+        <div>
+            @if (canCancel)
+            {
+                <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#cancelOrderModal">
+                    <i class="fas fa-times"></i> Hủy Đơn Hàng
+                </button>
+            }
+            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Quay Lại
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Danh Sách Sản Phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Sản Phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số Lượng</th>
+                                    <th>Thành Tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>@item.Truyen.TenTruyen</td>
+                                        <td>@item.Price.ToString("N0")đ</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@((item.Price * item.Quantity).ToString("N0"))đ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end fw-bold">Tổng Cộng:</td>
+                                    <td class="fw-bold text-danger">@Model.TotalAmount.ToString("N0")đ</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Thông Tin Đơn Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p>
+                        <strong>Trạng thái:</strong>
+                        @{
+                        var status = Model.Status;
+                        var badgeClass = "bg-secondary";
+                        var displayText = status;
+
+                        if (status == "Chờ xử lý" || status == "Pending")
+                        {
+                        badgeClass = "bg-warning text-dark";
+                        displayText = "Chờ xử lý";
+                        }
+                        else if (status == "Đang xử lý" || status == "Processing")
+                        {
+                        badgeClass = "bg-info";
+                        displayText = "Đang xử lý";
+                        }
+                        else if (status == "Đang giao" || status == "Shipped")
+                        {
+                        badgeClass = "bg-primary";
+                        displayText = "Đang giao";
+                        }
+                        else if (status == "Hoàn thành" || status == "Delivered")
+                        {
+                        badgeClass = "bg-success";
+                        displayText = "Hoàn thành";
+                        }
+                        else if (status == "Đã hủy" || status == "Cancelled" || status == "Canceled")
+                        {
+                        badgeClass = "bg-danger";
+                        displayText = "Đã hủy";
+                        }
+                        }
+                        <span class="badge @badgeClass">@displayText</span>
+                    </p>
+                    <hr>
+                    <h6 class="text-muted">Địa Chỉ Giao Hàng</h6>
+                    <p>@Model.ShippingAddress</p>
+                    
+                    @if (canCancel)
+                    {
+                        <hr>
+                        <div class="alert alert-info mb-0">
+                            <small><i class="fas fa-info-circle"></i> Đơn hàng đang chờ xử lý, bạn có thể hủy đơn nếu muốn.</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (canCancel)
+{
+    <!-- Modal xác nhận hủy đơn -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="cancelOrderModalLabel">
+                        <i class="fas fa-exclamation-triangle"></i> Xác Nhận Hủy Đơn Hàng
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn hủy đơn hàng <strong>#@Model.OrderId</strong>?</p>
+                    <p class="text-muted mb-0">Hành động này không thể hoàn tác.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Đóng
+                    </button>
+                    @using (Html.BeginForm("Cancel", "Orders", new { id = Model.OrderId }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Xác Nhận Hủy
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

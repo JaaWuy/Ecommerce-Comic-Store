@@ -1,0 +1,137 @@
+@model List<DoAnWeb.Models.CartItem>
+@{
+    ViewBag.Title = "Thanh toán";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-credit-card"></i> Thông tin giao hàng</h4>
+            </div>
+            <div class="card-body">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { @class = "needs-validation" }))
+                {
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-user"></i> Tên người nhận <span class="text-danger">*</span></label>
+                        <input type="text" name="receiverName" class="form-control" required placeholder="Nhập tên người nhận">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-phone"></i> Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="tel" name="receiverPhone" class="form-control" required placeholder="Nhập số điện thoại">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> Địa chỉ giao hàng <span class="text-danger">*</span></label>
+                        <textarea name="shippingAddress" class="form-control" rows="3" required placeholder="Nhập địa chỉ giao hàng"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-sticky-note"></i> Ghi chú</label>
+                        <textarea name="note" class="form-control" rows="2" placeholder="Ghi chú cho đơn hàng (không bắt buộc)"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-wallet"></i> Phương thức thanh toán <span class="text-danger">*</span></label>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentCOD" value="COD" required checked>
+                                    <label class="form-check-label" for="paymentCOD">
+                                        <i class="fas fa-money-bill-wave text-success"></i> <strong>Thanh toán khi nhận hàng (COD)</strong>
+                                        <br><small class="text-muted">Thanh toán bằng tiền mặt khi nhận hàng</small>
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentBank" value="Chuyển khoản" required>
+                                    <label class="form-check-label" for="paymentBank">
+                                        <i class="fas fa-university text-primary"></i> <strong>Chuyển khoản ngân hàng</strong>
+                                        <br><small class="text-muted">Chuyển khoản qua tài khoản ngân hàng</small>
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="paymentWallet" value="Ví điện tử" required>
+                                    <label class="form-check-label" for="paymentWallet">
+                                        <i class="fas fa-mobile-alt text-info"></i> <strong>Ví điện tử</strong>
+                                        <br><small class="text-muted">Thanh toán qua MoMo, ZaloPay, VNPay...</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Quay lại giỏ hàng
+                        </a>
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="fas fa-check-circle"></i> Đặt hàng
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="fas fa-receipt"></i> Thông tin đơn hàng</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th class="text-end">SL</th>
+                                <th class="text-end">Giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <small>@item.Truyen.TenTruyen</small>
+                                    </td>
+                                    <td class="text-end">@item.Quantity</td>
+                                    <td class="text-end text-danger">
+                                        @((item.Quantity * item.Truyen.GiaBan).ToString("N0"))đ
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-light">
+                                <td colspan="2"><strong>Tổng cộng:</strong></td>
+                                <td class="text-end text-danger fw-bold fs-5">
+                                    @ViewBag.Total.ToString("N0")đ
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-info-circle"></i>
+                    <small>
+                        <strong>Lưu ý:</strong> Đơn hàng sẽ được xử lý trong vòng 24h. 
+                        Phí vận chuyển sẽ được tính khi giao hàng.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

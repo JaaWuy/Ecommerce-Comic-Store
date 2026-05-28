@@ -1,0 +1,48 @@
+@model DoAnWeb.Models.Truyen
+@{
+    ViewBag.Title = "Xóa Sản Phẩm";
+}
+
+<div class="card">
+    <div class="card-header bg-danger text-white">
+        <i class="fas fa-exclamation-triangle"></i> Xác Nhận Xóa Sản Phẩm
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="fas fa-exclamation-circle"></i> 
+            <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa sản phẩm này?
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">Mã Sản Phẩm:</dt>
+            <dd class="col-sm-9">@Model.MaTruyen</dd>
+
+            <dt class="col-sm-3">Tên Sản Phẩm:</dt>
+            <dd class="col-sm-9">@Model.TenTruyen</dd>
+
+            <dt class="col-sm-3">Thể Loại:</dt>
+            <dd class="col-sm-9">@Model.TheLoai.TenTL</dd>
+
+            <dt class="col-sm-3">Giá Bán:</dt>
+            <dd class="col-sm-9">@Model.GiaBan.ToString("N0")đ</dd>
+
+            <dt class="col-sm-3">Số Lượng Tồn:</dt>
+            <dd class="col-sm-9">@Model.SoLuongTon</dd>
+        </dl>
+
+        @using (Html.BeginForm("Delete", "Products", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("id", Model.MaTruyen)
+
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Hủy
+                </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+            </div>
+        }
+    </div>
+</div>

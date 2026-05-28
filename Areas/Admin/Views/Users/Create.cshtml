@@ -1,0 +1,86 @@
+@model DoAnWeb.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Thêm Người Dùng";
+}
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-user-plus"></i> Thêm Người Dùng Mới
+    </div>
+    <div class="card-body">
+        @using (Html.BeginForm("Create", "Users", FormMethod.Post, new { @class = "needs-validation" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "alert alert-danger" })
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Email, "Email", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.FullName, "Họ và Tên", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.Password, "Mật Khẩu", new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.ConfirmPassword, "Xác Nhận Mật Khẩu", new { @class = "form-label" })
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        @Html.LabelFor(m => m.PhoneNumber, "Số Điện Thoại", new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Vai Trò</label>
+                        <select name="role" class="form-select">
+                            <option value="User">User</option>
+                            @foreach (var role in ViewBag.Roles)
+                            {
+                                <option value="@role.Name">@role.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                @Html.LabelFor(m => m.Address, "Địa Chỉ", new { @class = "form-label" })
+                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", rows = 3 })
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay Lại
+                </a>
+                <button type="submit" class="btn btn-admin">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,236 @@
+@{
+    ViewBag.Title = "Demo API - AJAX";
+}
+
+<div class="card shadow">
+    <div class="card-header bg-info text-white">
+        <h3 class="mb-0"><i class="fas fa-code"></i> Demo API với AJAX</h3>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <strong>Thông tin:</strong> Trang này sử dụng AJAX (jQuery) để gọi API và hiển thị danh sách sản phẩm.
+            <br>
+            <strong>API Endpoint:</strong> <code>GET /api/products</code>
+        </div>
+
+        <!-- Bộ lọc -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
+                <input type="text" id="searchInput" class="form-control" placeholder="Nhập tên sản phẩm...">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-filter"></i> Thể loại</label>
+                <select id="categorySelect" class="form-select">
+                    <option value="">Tất cả</option>
+                    <option value="TL01">Manga</option>
+                    <option value="TL02">Manhwa</option>
+                    <option value="TL03">Manhua</option>
+                    <option value="TL04">Comics</option>
+                    <option value="TL05">Webtoon</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label"><i class="fas fa-list"></i> Số lượng/trang</label>
+                <select id="pageSizeSelect" class="form-select">
+                    <option value="6">6</option>
+                    <option value="12" selected>12</option>
+                    <option value="24">24</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button id="loadBtn" class="btn btn-info w-100">
+                    <i class="fas fa-sync"></i> Tải dữ liệu
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading spinner -->
+        <div id="loading" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <p class="mt-3">Đang tải dữ liệu từ API...</p>
+        </div>
+
+        <!-- Thông tin phân trang -->
+        <div id="paginationInfo" class="mb-3"></div>
+
+        <!-- Danh sách sản phẩm -->
+        <div id="productList" class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4"></div>
+
+        <!-- Phân trang -->
+        <div id="pagination" class="mt-4 d-flex justify-content-center"></div>
+    </div>
+</div>
+
+<!-- Template cho product card -->
+<script id="productCardTemplate" type="text/template">
+    <div class="col">
+        <div class="card h-100 product-card shadow-sm">
+            <img src="{imgUrl}" class="card-img-top" alt="{tenTruyen}" style="height: 300px; object-fit: cover;">
+            <div class="card-body">
+                <span class="badge bg-secondary mb-2">{theLoaiTen}</span>
+                <h6 class="card-title">{tenTruyen}</h6>
+                <p class="card-text text-danger fw-bold">{giaBan}đ</p>
+                <p class="card-text text-muted small">
+                    <i class="fas fa-box"></i> Còn lại: {soLuongTon}
+                </p>
+                <a href="/Truyen/Detail/{maTruyen}" class="btn btn-outline-info w-100">
+                    <i class="fas fa-eye"></i> Xem chi tiết
+                </a>
+            </div>
+        </div>
+    </div>
+</script>
+
+@section Scripts {
+    <script>
+        let currentPage = 1;
+
+        $(document).ready(function() {
+            // Tải dữ liệu khi trang load
+            loadProducts();
+
+            // Sự kiện click nút tải
+            $('#loadBtn').click(function() {
+                currentPage = 1;
+                loadProducts();
+            });
+
+            // Tìm kiếm khi nhấn Enter
+            $('#searchInput').keypress(function(e) {
+                if (e.which == 13) {
+                    currentPage = 1;
+                    loadProducts();
+                }
+            });
+        });
+
+        function loadProducts(page = 1) {
+            currentPage = page;
+            
+            // Lấy giá trị filter
+            const search = $('#searchInput').val();
+            const category = $('#categorySelect').val();
+            const pageSize = $('#pageSizeSelect').val();
+
+            // Hiển thị loading
+            $('#loading').show();
+            $('#productList').empty();
+            $('#pagination').empty();
+            $('#paginationInfo').empty();
+
+            // Gọi API
+            $.ajax({
+                url: '/api/products',
+                type: 'GET',
+                data: {
+                    search: search,
+                    category: category,
+                    page: page,
+                    pageSize: pageSize
+                },
+                success: function(response) {
+                    $('#loading').hide();
+                    
+                    if (response.success && response.data.length > 0) {
+                        displayProducts(response.data);
+                        displayPagination(response.pagination);
+                        displayPaginationInfo(response.pagination);
+                    } else {
+                        $('#productList').html(`
+                            <div class="col-12 text-center py-5">
+                                <i class="fas fa-search fa-5x text-muted mb-3"></i>
+                                <h4>Không tìm thấy sản phẩm nào</h4>
+                            </div>
+                        `);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#loading').hide();
+                    $('#productList').html(`
+                        <div class="col-12">
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Có lỗi xảy ra khi tải dữ liệu: ${error}
+                            </div>
+                        </div>
+                    `);
+                }
+            });
+        }
+
+        function displayProducts(products) {
+            const template = $('#productCardTemplate').html();
+            let html = '';
+
+            products.forEach(function(product) {
+                let card = template
+                    .replace(/{maTruyen}/g, product.MaTruyen)
+                    .replace(/{tenTruyen}/g, product.TenTruyen)
+                    .replace(/{giaBan}/g, product.GiaBan.toLocaleString('vi-VN'))
+                    .replace(/{soLuongTon}/g, product.SoLuongTon)
+                    .replace(/{imgUrl}/g, product.imgUrl)
+                    .replace(/{theLoaiTen}/g, product.TheLoai.TenTL);
+                
+                html += card;
+            });
+
+            $('#productList').html(html);
+        }
+
+        function displayPaginationInfo(pagination) {
+            const start = (pagination.page - 1) * pagination.pageSize + 1;
+            const end = Math.min(pagination.page * pagination.pageSize, pagination.total);
+            
+            $('#paginationInfo').html(`
+                <p class="text-muted">
+                    Hiển thị ${start} - ${end} trong tổng số ${pagination.total} sản phẩm
+                    (Trang ${pagination.page}/${pagination.totalPages})
+                </p>
+            `);
+        }
+
+        function displayPagination(pagination) {
+            if (pagination.totalPages <= 1) return;
+
+            let html = '<ul class="pagination">';
+
+            // Previous button
+            if (pagination.page > 1) {
+                html += `<li class="page-item">
+                    <a class="page-link" href="#" onclick="loadProducts(${pagination.page - 1}); return false;">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>`;
+            }
+
+            // Page numbers
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                if (i === pagination.page) {
+                    html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+                } else if (i === 1 || i === pagination.totalPages || Math.abs(i - pagination.page) <= 2) {
+                    html += `<li class="page-item">
+                        <a class="page-link" href="#" onclick="loadProducts(${i}); return false;">${i}</a>
+                    </li>`;
+                } else if (Math.abs(i - pagination.page) === 3) {
+                    html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                }
+            }
+
+            // Next button
+            if (pagination.page < pagination.totalPages) {
+                html += `<li class="page-item">
+                    <a class="page-link" href="#" onclick="loadProducts(${pagination.page + 1}); return false;">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>`;
+            }
+
+            html += '</ul>';
+            $('#pagination').html(html);
+        }
+    </script>
+}

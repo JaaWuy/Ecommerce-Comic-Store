@@ -1,0 +1,831 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - SachWuy.vn</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            --warning-gradient: linear-gradient(135deg, #F2994A 0%, #F2C94C 100%);
+            --danger-gradient: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            --dark-gradient: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            
+            --primary-color: #667eea;
+            --primary-dark: #5a67d8;
+            --primary-light: #7c3aed;
+            --accent-color: #f093fb;
+            
+            --text-dark: #1a202c;
+            --text-muted: #718096;
+            --bg-light: #f7fafc;
+            --bg-card: #ffffff;
+            
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --shadow-glow: 0 0 40px rgba(102, 126, 234, 0.4);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-normal);
+        }
+
+        /* ========== TOP BAR ========== */
+        .top-bar {
+            background: var(--dark-gradient);
+            color: white;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .top-bar i {
+            margin-right: 8px;
+            color: var(--accent-color);
+        }
+
+        .top-bar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ========== HEADER ========== */
+        .main-header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo i {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 36px;
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            background: var(--bg-light);
+            padding: 8px;
+            border-radius: var(--radius-full);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-box:focus-within {
+            box-shadow: var(--shadow-md), var(--shadow-glow);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .btn-search {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+
+        .btn-search:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Cart Button */
+        .btn-cart {
+            position: relative;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 12px 24px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+
+        .btn-cart:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger-gradient);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            min-width: 22px;
+            height: 22px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========== NAVIGATION ========== */
+        .main-nav {
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar {
+            padding: 0;
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--text-dark);
+            padding: 16px 20px;
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link {
+            padding: 18px 20px;
+            font-weight: 500;
+            color: var(--text-dark);
+            position: relative;
+            transition: var(--transition-normal);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-full);
+            transform: translateX(-50%);
+            transition: var(--transition-normal);
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 60%;
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 6px;
+        }
+
+        /* Dropdown */
+        .dropdown-menu {
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            padding: 12px;
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-light);
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            flex: 1;
+            padding: 30px 0;
+        }
+
+        /* Sidebar */
+        .sidebar-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: none;
+        }
+
+        .sidebar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 20px 24px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .sidebar-header i {
+            margin-right: 12px;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 8px;
+            margin: 0;
+        }
+
+        .category-item {
+            margin: 4px 0;
+        }
+
+        .category-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            color: var(--text-dark);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            transition: var(--transition-normal);
+        }
+
+        .category-link:hover {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, transparent 100%);
+            color: var(--primary-color);
+            padding-left: 28px;
+        }
+
+        .category-link i {
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        /* ========== FOOTER ========== */
+        .main-footer {
+            background: var(--dark-gradient);
+            color: white;
+            padding: 50px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 25px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            transition: var(--transition-normal);
+        }
+
+        .social-link:hover {
+            background: var(--primary-gradient);
+            transform: translateY(-5px) scale(1.1);
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 25px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+
+        /* ========== TOAST ========== */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: none;
+        }
+
+        .toast.bg-success {
+            background: var(--success-gradient) !important;
+        }
+
+        .toast.bg-danger {
+            background: var(--danger-gradient) !important;
+        }
+
+        /* ========== CARDS ========== */
+        .card {
+            border: none;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-normal);
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header.bg-danger {
+            background: var(--primary-gradient) !important;
+            border: none;
+            padding: 18px 24px;
+            font-weight: 600;
+        }
+
+        /* ========== PAGINATION ========== */
+        .pagination {
+            gap: 5px;
+        }
+
+        .pagination .page-link {
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            font-weight: 500;
+        }
+
+        .pagination .page-link:hover,
+        .pagination .page-item.active .page-link {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        /* ========== FORM CONTROLS ========== */
+        .form-control {
+            border: 2px solid #e2e8f0;
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            font-family: inherit;
+            transition: var(--transition-normal);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @@media (max-width: 768px) {
+            .top-bar-content {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+
+            .logo {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="top-bar-content">
+                <span><i class="fas fa-store"></i> NHÀ SÁCH CỦA HUY - Chất lượng tạo nên thương hiệu</span>
+                <span><i class="fas fa-phone-alt"></i> Hotline: 0974 869 355 | <i class="fas fa-truck"></i> Miễn phí vận chuyển đơn từ 200K</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-4">
+                    <a href="@Url.Action("Index", "Home")" class="logo">
+                        <i class="fas fa-book-reader"></i>
+                        <span>SachWuy.vn</span>
+                    </a>
+                </div>
+                <div class="col-lg-6 col-md-4">
+                    <form action="@Url.Action("Index", "Truyen")" method="get" class="search-container">
+                        <div class="search-box">
+                            <input type="text" name="search" placeholder="Tìm kiếm sách, truyện...">
+                            <button type="submit" class="btn-search">
+                                <i class="fas fa-search"></i>
+                                <span class="d-none d-md-inline">Tìm kiếm</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-3 col-md-4 text-end">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <a href="@Url.Action("Index", "Cart")" class="btn-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Giỏ hàng</span>
+                            <span class="cart-badge" id="cartCount">0</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Login", "Account")" class="btn-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Giỏ hàng</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <i class="fas fa-home"></i> Trang Chủ
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Truyen")">
+                                <i class="fas fa-book-open"></i> Sản Phẩm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("About", "Pages")">
+                                <i class="fas fa-info-circle"></i> Giới Thiệu
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Contact", "Pages")">
+                                <i class="fas fa-envelope"></i> Liên Hệ
+                            </a>
+                        </li>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("ProductsApi", "Home")">
+                                    <i class="fas fa-code"></i> Demo API
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("TeamMembers", "Home")">
+                                    <i class="fas fa-users"></i> Thành Viên
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (Request.IsAuthenticated)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle"></i> @User.Identity.Name
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("UserProfile", "Account")">
+                                            <i class="fas fa-user"></i> Thông tin cá nhân
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="@Url.Action("Index", "Orders")">
+                                            <i class="fas fa-shopping-bag"></i> Đơn hàng của tôi
+                                        </a>
+                                    </li>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("Index", "Dashboard", new { area = "Admin" })">
+                                                <i class="fas fa-shield-alt"></i> Quản Trị Hệ Thống
+                                            </a>
+                                        </li>
+                                    }
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <a href="javascript:document.getElementById('logoutForm').submit()" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                            </a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Login", "Account")">
+                                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Register", "Account")">
+                                    <i class="fas fa-user-plus"></i> Đăng ký
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-4">
+                    <div class="sidebar-card">
+                        <div class="sidebar-header">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Danh mục sản phẩm</span>
+                        </div>
+                        <ul class="category-list">
+                            <li class="category-item">
+                                <a href="@Url.Action("Index", "Truyen", new { category = "TL01" })" class="category-link">
+                                    <i class="fas fa-book"></i>
+                                    <span>Manga</span>
+                                </a>
+                            </li>
+                            <li class="category-item">
+                                <a href="@Url.Action("Index", "Truyen", new { category = "TL02" })" class="category-link">
+                                    <i class="fas fa-book"></i>
+                                    <span>Manhwa</span>
+                                </a>
+                            </li>
+                            <li class="category-item">
+                                <a href="@Url.Action("Index", "Truyen", new { category = "TL03" })" class="category-link">
+                                    <i class="fas fa-book"></i>
+                                    <span>Manhua</span>
+                                </a>
+                            </li>
+                            <li class="category-item">
+                                <a href="@Url.Action("Index", "Truyen", new { category = "TL04" })" class="category-link">
+                                    <i class="fas fa-book"></i>
+                                    <span>Comics</span>
+                                </a>
+                            </li>
+                            <li class="category-item">
+                                <a href="@Url.Action("Index", "Truyen", new { category = "TL05" })" class="category-link">
+                                    <i class="fas fa-book"></i>
+                                    <span>Webtoon</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-8">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-book-reader"></i> SachWuy.vn
+                </div>
+                <p class="footer-text">
+                    Nhà sách trực tuyến hàng đầu Việt Nam - Nơi tri thức hội tụ
+                </p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/MrBeast6000" target="_blank" class="social-link" title="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="http://instagram.com/mrbeast/" target="_blank" class="social-link" title="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/%40MrBeast" target="_blank" class="social-link" title="YouTube">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/%40mrbeast" target="_blank" class="social-link" title="TikTok">
+                        <i class="fab fa-tiktok"></i>
+                    </a>
+                </div>
+                <div class="footer-bottom">
+                    <p><i class="fas fa-copyright"></i> 2025 NHÀ SÁCH CỦA HUY – SachWuy.vn | All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div id="liveToast" class="toast align-items-center text-white border-0" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span id="toastMessage">Thông báo</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="@Url.Content("~/Scripts/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery-3.7.1.min.js")"></script>
+
+    <script>
+        $(document).ready(function() {
+            updateCartCount();
+
+            var path = window.location.pathname;
+            $('.navbar-nav .nav-link').each(function() {
+                if ($(this).attr('href') === path) {
+                    $(this).addClass('active');
+                }
+            });
+
+            $('.pagination li a').addClass('page-link');
+        });
+
+        function updateCartCount() {
+            @if (Request.IsAuthenticated)
+            {
+                <text>
+                $.ajax({
+                    url: '@Url.Action("GetCartCount", "Cart")',
+                    type: 'GET',
+                    success: function(count) {
+                        $('#cartCount').text(count);
+                        if (count > 0) {
+                            $('#cartCount').show();
+                        } else {
+                            $('#cartCount').hide();
+                        }
+                    }
+                });
+                </text>
+            }
+        }
+
+        function showNotification(message, type) {
+            type = type || 'success';
+            var toastEl = document.getElementById('liveToast');
+            var toastBody = document.getElementById('toastMessage');
+            toastBody.textContent = message;
+            toastEl.className = 'toast align-items-center text-white border-0';
+            toastEl.classList.add(type === 'success' ? 'bg-success' : (type === 'error' ? 'bg-danger' : 'bg-primary'));
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+
+        function addToCart(maTruyen) {
+            $.ajax({
+                url: '@Url.Action("AddToCart", "Cart")',
+                type: 'POST',
+                data: {
+                    maTruyen: maTruyen,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function(response) {
+                    if (response.success) {
+                        updateCartCount();
+                        showNotification('Đã thêm sản phẩm vào giỏ hàng!', 'success');
+                    } else {
+                        showNotification(response.message || 'Có lỗi xảy ra!', 'error');
+                    }
+                },
+                error: function() {
+                    showNotification('Vui lòng đăng nhập để mua hàng!', 'error');
+                    setTimeout(function() {
+                        window.location.href = '@Url.Action("Login", "Account")';
+                    }, 1500);
+                }
+            });
+        }
+    </script>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

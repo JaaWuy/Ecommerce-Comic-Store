@@ -1,0 +1,296 @@
+@model DoAnWeb.Models.LoginViewModel
+@{
+    ViewBag.Title = "Đăng nhập";
+}
+
+<style>
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 40px 20px;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 450px;
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        animation: slideUp 0.5s ease;
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+        animation: rotate 20s linear infinite;
+    }
+
+    @@keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .login-header i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        display: block;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-header p {
+        margin: 10px 0 0;
+        opacity: 0.9;
+        font-size: 14px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .login-body {
+        padding: 40px 35px;
+    }
+
+    .form-floating-custom {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .form-floating-custom input {
+        width: 100%;
+        padding: 16px 20px;
+        padding-left: 50px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 15px;
+        font-family: inherit;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .form-floating-custom input:focus {
+        border-color: #667eea;
+        background: white;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+        outline: none;
+    }
+
+    .form-floating-custom i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #a0aec0;
+        font-size: 18px;
+        transition: color 0.3s;
+    }
+
+    .form-floating-custom input:focus + i,
+    .form-floating-custom:focus-within i {
+        color: #667eea;
+    }
+
+    .form-floating-custom label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .custom-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .custom-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #667eea;
+        cursor: pointer;
+    }
+
+    .custom-checkbox span {
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-login:active {
+        transform: translateY(-1px);
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .login-footer p {
+        color: #64748b;
+        margin: 0;
+    }
+
+    .login-footer a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    .login-footer a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .validation-error {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 6px;
+        display: none;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .validation-error:not(:empty) {
+        display: flex;
+    }
+
+    .validation-error:not(:empty)::before {
+        content: '\f071';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%);
+        border: none;
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        color: #dc2626;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <i class="fas fa-user-circle"></i>
+            <h2>Chào mừng trở lại!</h2>
+            <p>Đăng nhập để tiếp tục mua sắm</p>
+        </div>
+        <div class="login-body">
+            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "alert-custom" })
+
+                <div class="form-floating-custom">
+                    <label for="Email"><i class="fas fa-envelope"></i> Email</label>
+                    <div style="position: relative;">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nhập địa chỉ email", type = "email", id = "Email" })
+                        <i class="fas fa-envelope" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #a0aec0;"></i>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "validation-error" })
+                </div>
+
+                <div class="form-floating-custom">
+                    <label for="Password"><i class="fas fa-lock"></i> Mật khẩu</label>
+                    <div style="position: relative;">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Nhập mật khẩu", id = "Password" })
+                        <i class="fas fa-lock" style="position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #a0aec0;"></i>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "validation-error" })
+                </div>
+
+                <div class="remember-forgot">
+                    <label class="custom-checkbox">
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                        <span>Ghi nhớ đăng nhập</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập
+                </button>
+
+                <div class="login-footer">
+                    <p>Chưa có tài khoản? <a href="@Url.Action("Register", "Account")">Đăng ký ngay</a></p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="@Url.Content("~/Scripts/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+}

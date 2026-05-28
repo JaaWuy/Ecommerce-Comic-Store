@@ -1,0 +1,118 @@
+@model PagedList.IPagedList<DoAnWeb.Models.Order>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Quản Lý Đơn Hàng";
+}
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-shopping-cart"></i> Danh Sách Đơn Hàng
+    </div>
+    <div class="card-body">
+        <!-- Bộ lọc -->
+        <form method="get" class="mb-3">
+            <div class="row">
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="Pending" @(ViewBag.Status == "Pending" ? "selected" : "")>Chờ xử lý</option>
+                        <option value="Processing" @(ViewBag.Status == "Processing" ? "selected" : "")>Đang xử lý</option>
+                        <option value="Shipped" @(ViewBag.Status == "Shipped" ? "selected" : "")>Đang giao</option>
+                        <option value="Delivered" @(ViewBag.Status == "Delivered" ? "selected" : "")>Hoàn thành</option>
+                        <option value="Cancelled" @(ViewBag.Status == "Cancelled" ? "selected" : "")>Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="fromDate" class="form-control" value="@ViewBag.FromDate">
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="toDate" class="form-control" value="@ViewBag.ToDate">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-admin w-100" type="submit">
+                        <i class="fas fa-filter"></i> Lọc
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Bảng danh sách -->
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Mã ĐH</th>
+                        <th>Khách Hàng</th>
+                        <th>Ngày Đặt</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td><strong>#@order.OrderId</strong></td>
+                            <td>@order.User.FullName</td>
+                            <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><strong>@order.TotalAmount.ToString("N0")đ</strong></td>
+                            <td>
+                                @{
+                                    var status = order.Status;
+                                    var badgeClass = "bg-secondary";
+                                    var displayText = status;
+
+                                    // Xử lý cả tiếng Việt và tiếng Anh
+                                    if (status == "Chờ xử lý" || status == "Pending")
+                                    {
+                                        badgeClass = "bg-warning";
+                                        displayText = "Chờ xử lý";
+                                    }
+                                    else if (status == "Đang xử lý" || status == "Processing")
+                                    {
+                                        badgeClass = "bg-info";
+                                        displayText = "Đang xử lý";
+                                    }
+                                    else if (status == "Đang giao" || status == "Shipped")
+                                    {
+                                        badgeClass = "bg-primary";
+                                        displayText = "Đang giao";
+                                    }
+                                    else if (status == "Hoàn thành" || status == "Delivered")
+                                    {
+                                        badgeClass = "bg-success";
+                                        displayText = "Hoàn thành";
+                                    }
+                                    else if (status == "Đã hủy" || status == "Cancelled")
+                                    {
+                                        badgeClass = "bg-danger";
+                                        displayText = "Đã hủy";
+                                    }
+                                }
+                                <span class="badge @badgeClass">@displayText</span>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = order.OrderId })" class="btn btn-sm btn-info">
+                                    <i class="fas fa-eye"></i> Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Phân trang -->
+        @if (Model.PageCount > 1)
+        {
+            <div class="d-flex justify-content-center">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { status = ViewBag.Status, fromDate = ViewBag.FromDate, toDate = ViewBag.ToDate, page }), new PagedListRenderOptions
+                {
+                    UlElementClasses = new[] { "pagination" },
+                    LiElementClasses = new[] { "page-item" }
+                })
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,123 @@
+@model DoAnWeb.Models.Order
+@{
+    ViewBag.Title = "Chi Tiết Đơn Hàng";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i> Thông Tin Đơn Hàng #@Model.OrderId
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Khách Hàng:</dt>
+                    <dd class="col-sm-8">@Model.User.FullName</dd>
+
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">@Model.User.Email</dd>
+
+                    <dt class="col-sm-4">Số Điện Thoại:</dt>
+                    <dd class="col-sm-8">@Model.User.PhoneNumber</dd>
+
+                    <dt class="col-sm-4">Địa Chỉ Giao Hàng:</dt>
+                    <dd class="col-sm-8">@Model.ShippingAddress</dd>
+
+                    <dt class="col-sm-4">Ngày Đặt:</dt>
+                    <dd class="col-sm-8">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                    <dt class="col-sm-4">Trạng Thái:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Status == "Pending")
+                        {
+                            <span class="badge bg-warning">Chờ xử lý</span>
+                        }
+                        else if (Model.Status == "Processing")
+                        {
+                            <span class="badge bg-info">Đang xử lý</span>
+                        }
+                        else if (Model.Status == "Shipped")
+                        {
+                            <span class="badge bg-primary">Đang giao</span>
+                        }
+                        else if (Model.Status == "Delivered")
+                        {
+                            <span class="badge bg-success">Đã giao</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Đã hủy</span>
+                        }
+                    </dd>
+                </dl>
+
+                <h5 class="mt-4">Chi Tiết Sản Phẩm</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Sản Phẩm</th>
+                                <th>Đơn Giá</th>
+                                <th>Số Lượng</th>
+                                <th>Thành Tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr>
+                                    <td>@item.Truyen.TenTruyen</td>
+                                    <td>@item.Price.ToString("N0")đ</td>
+                                    <td>@item.Quantity</td>
+                                    <td><strong>@((item.Price * item.Quantity).ToString("N0"))đ</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Tổng Cộng:</strong></td>
+                                <td><strong class="text-danger">@Model.TotalAmount.ToString("N0")đ</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-cog"></i> Cập Nhật Trạng Thái
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm("UpdateStatus", "Orders", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("orderId", Model.OrderId)
+
+                    <div class="mb-3">
+                        <label class="form-label">Trạng Thái Mới</label>
+                        <select name="status" class="form-select" required>
+                            <option value="Pending" @(Model.Status == "Pending" ? "selected" : "")>Chờ xử lý</option>
+                            <option value="Processing" @(Model.Status == "Processing" ? "selected" : "")>Đang xử lý</option>
+                            <option value="Shipped" @(Model.Status == "Shipped" ? "selected" : "")>Đang giao</option>
+                            <option value="Delivered" @(Model.Status == "Delivered" ? "selected" : "")>Đã giao</option>
+                            <option value="Cancelled" @(Model.Status == "Cancelled" ? "selected" : "")>Đã hủy</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-admin w-100">
+                        <i class="fas fa-save"></i> Cập Nhật
+                    </button>
+                }
+
+                <hr>
+
+                <a href="@Url.Action("Index")" class="btn btn-secondary w-100">
+                    <i class="fas fa-arrow-left"></i> Quay Lại
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

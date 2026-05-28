@@ -1,0 +1,23 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio cache/options directory
+.vs/
+
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+# NuGet Packages
+*.nupkg
+packages/
+!packages/repositories.config
+
+# App_Data (if it contains local databases like .mdf/.ldf)
+App_Data/*.mdf
+App_Data/*.ldf
+
+# Logs
+*.log

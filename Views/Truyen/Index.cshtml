@@ -1,0 +1,161 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model IPagedList<DoAnWeb.Models.Truyen>
+@{
+    ViewBag.Title = "Danh sách sản phẩm";
+}
+
+<style>
+    .text-gradient {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+    .bg-gradient-primary {
+        background: var(--primary-gradient) !important;
+    }
+    .btn-gradient {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+    }
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg) !important;
+    }
+</style>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-gradient-primary text-white">
+        <h4 class="mb-0"><i class="fas fa-book-open"></i> Danh sách sản phẩm</h4>
+    </div>
+    <div class="card-body">
+        <!-- Bộ lọc và tìm kiếm -->
+        <form method="get" action="@Url.Action("Index")" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label"><i class="fas fa-search"></i> Tìm kiếm</label>
+                <input type="text" name="search" class="form-control" placeholder="Nhập tên sản phẩm..." value="@ViewBag.Search">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-filter"></i> Thể loại</label>
+                <select name="category" class="form-select">
+                    <option value="">Tất cả</option>
+                    @foreach (var tl in ViewBag.TheLoai as List<DoAnWeb.Models.TheLoai>)
+                    {
+                        <option value="@tl.MaTL" @(ViewBag.Category == tl.MaTL ? "selected" : "")>
+                            @tl.TenTL
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label"><i class="fas fa-sort"></i> Sắp xếp</label>
+                <select name="sortOrder" class="form-select">
+                    <option value="">Tên A-Z</option>
+                    <option value="name_desc" @(ViewBag.CurrentSort == "name_desc" ? "selected" : "")>Tên Z-A</option>
+                    <option value="price" @(ViewBag.CurrentSort == "price" ? "selected" : "")>Giá thấp đến cao</option>
+                    <option value="price_desc" @(ViewBag.CurrentSort == "price_desc" ? "selected" : "")>Giá cao đến thấp</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label d-block">&nbsp;</label>
+                <button type="submit" class="btn btn-gradient w-100">
+                    <i class="fas fa-search"></i> Lọc
+                </button>
+            </div>
+        </form>
+
+        <!-- Thông tin kết quả -->
+        <div class="mb-3">
+            <p class="text-muted">
+                Hiển thị @Model.Count() trong tổng số @Model.TotalItemCount sản phẩm
+                @if (!string.IsNullOrEmpty(ViewBag.Search as string))
+                {
+                    <span> - Kết quả tìm kiếm cho: <strong>"@ViewBag.Search"</strong></span>
+                }
+            </p>
+        </div>
+
+        @if (Model.Any())
+        {
+            <!-- Danh sách sản phẩm -->
+            <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
+                @foreach (var item in Model)
+                {
+                    <div class="col">
+                        <div class="card h-100 product-card shadow-sm border-0">
+                            <a href="@Url.Action("Detail", new { id = item.MaTruyen })">
+                                <img src="@item.imgUrl" class="card-img-top" alt="@item.TenTruyen" 
+                                     style="height: 300px; object-fit: cover;">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <span class="badge bg-secondary mb-2 align-self-start">@item.TheLoai.TenTL</span>
+                                <h6 class="card-title">
+                                    <a href="@Url.Action("Detail", new { id = item.MaTruyen })" class="text-dark text-decoration-none fw-bold">
+                                        @item.TenTruyen
+                                    </a>
+                                </h6>
+                                <p class="card-text text-gradient fw-bold fs-5 mb-2">
+                                    @item.GiaBan.ToString("N0")đ
+                                </p>
+                                <p class="card-text text-muted small">
+                                    <i class="fas fa-box"></i> Còn lại: @item.SoLuongTon
+                                </p>
+                                <div class="mt-auto">
+                                    @if (Request.IsAuthenticated)
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <button class="btn btn-gradient w-100 rounded-pill" onclick="addToCart('@item.MaTruyen')">
+                                            <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Login", "Account")" class="btn btn-outline-primary w-100 rounded-pill">
+                                            <i class="fas fa-sign-in-alt"></i> Đăng nhập để mua
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Phân trang -->
+            <div class="mt-4 d-flex justify-content-center">
+                @Html.PagedListPager(Model, page => Url.Action("Index", new { 
+                    page, 
+                    search = ViewBag.Search, 
+                    category = ViewBag.Category, 
+                    sortOrder = ViewBag.CurrentSort 
+                }), new PagedListRenderOptions
+                {
+                    DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+                    DisplayLinkToLastPage = PagedListDisplayMode.Always,
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+                    DisplayLinkToNextPage = PagedListDisplayMode.Always,
+                    UlElementClasses = new[] { "pagination" },
+                    LiElementClasses = new[] { "page-item" }
+                })
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-5x text-muted mb-3"></i>
+                <h4>Không tìm thấy sản phẩm nào</h4>
+                <p class="text-muted">Vui lòng thử lại với từ khóa khác</p>
+                <a href="@Url.Action("Index")" class="btn btn-gradient">Xem tất cả sản phẩm</a>
+            </div>
+        }
+    </div>
+</div>

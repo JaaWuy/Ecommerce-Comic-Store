@@ -1,0 +1,25 @@
+﻿@model List<DoAnWeb.Models.TheLoai>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Mã Thể Loại</th>
+            <th>Tên Thể Loại</th>
+            <th>Mô Tả</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tl in Model)
+        {
+            <tr>
+                <td>@tl.MaTL</td>
+                <td>@tl.TenTL</td>
+                <td>@tl.MoTa</td>
+            </tr>
+        }
+    </tbody>
+</table>

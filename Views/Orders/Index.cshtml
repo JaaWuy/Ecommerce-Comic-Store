@@ -1,0 +1,188 @@
+@model IEnumerable<DoAnWeb.Models.Order>
+@{
+    ViewBag.Title = "Don Hang Cua Toi";
+}
+
+<style>
+    .order-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+    }
+    .order-table { border-radius: 15px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.08); background: white; }
+    .order-table th { font-weight: 600; color: #495057; padding: 1rem; background: #f8f9fa; }
+    .order-table td { padding: 1rem; vertical-align: middle; }
+    .order-id { font-weight: 700; color: #667eea; }
+    .order-total { font-weight: 700; color: #e74c3c; }
+    .action-btns { display: flex; gap: 8px; }
+    .btn-detail { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; }
+    .btn-detail:hover { color: white; transform: translateY(-2px); }
+    .btn-cancel { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%); border: none; color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; }
+    .btn-cancel:hover { color: white; transform: translateY(-2px); }
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+    .badge-pending { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); color: #856404; }
+    .badge-processing { background: linear-gradient(135deg, #81ecec, #00cec9); color: #0c5460; }
+    .badge-shipping { background: linear-gradient(135deg, #74b9ff, #0984e3); color: white; }
+    .badge-completed { background: linear-gradient(135deg, #55efc4, #00b894); color: white; }
+    .badge-cancelled { background: linear-gradient(135deg, #fab1a0, #e17055); color: white; }
+    .alert-custom { border: none; border-radius: 10px; padding: 1rem 1.5rem; border-left: 4px solid; }
+    .alert-success-custom { background: #d4edda; border-left-color: #28a745; }
+    .alert-danger-custom { background: #f8d7da; border-left-color: #dc3545; }
+    .modal-cancel .modal-content { border: none; border-radius: 20px; }
+    .modal-cancel .modal-header { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); color: white; }
+    .modal-cancel .modal-body { padding: 2rem; text-align: center; }
+    .modal-cancel .warning-icon { font-size: 4rem; color: #ff6b6b; margin-bottom: 1rem; }
+    .modal-cancel .modal-footer { border: none; justify-content: center; gap: 1rem; padding: 1rem 2rem 2rem; }
+    .btn-back { background: #e9ecef; border: none; color: #495057; padding: 10px 25px; border-radius: 10px; }
+    .btn-confirm { background: linear-gradient(135deg, #ff6b6b, #ee5a5a); border: none; color: white; padding: 10px 25px; border-radius: 10px; }
+    .empty-state { text-align: center; padding: 4rem 2rem; background: #f8f9fa; border-radius: 20px; }
+    .empty-state i { font-size: 5rem; color: #adb5bd; }
+    .btn-shop { background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: white; padding: 12px 30px; border-radius: 10px; text-decoration: none; }
+    .btn-shop:hover { color: white; }
+</style>
+
+<div class="container mt-5 mb-5">
+    <div class="order-header">
+        <h2 class="mb-0"><i class="fas fa-shopping-bag me-2"></i> Đơn Hàng Của Tôi</h2>
+        <p class="mb-0 mt-2 opacity-75">Quản lý và theo dõi các đơn hàng của bạn</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-custom alert-success-custom alert-dismissible fade show mb-4">
+            <i class="fas fa-check-circle me-2"></i> <strong>Thành công!</strong> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-custom alert-danger-custom alert-dismissible fade show mb-4">
+            <i class="fas fa-exclamation-circle me-2"></i> <strong>Lỗi!</strong> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="fas fa-box-open d-block mb-3"></i>
+            <h4>Bạn chưa có đơn hàng nào</h4>
+            <p class="text-muted mb-4">Hãy khám phá các sản phẩm tuyệt vời của chúng tôi!</p>
+            <a href="@Url.Action("Index", "Home")" class="btn-shop"><i class="fas fa-shopping-cart me-2"></i> Mua Sắm Ngay</a>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table order-table mb-0">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag me-1"></i> Mã Đơn</th>
+                        <th><i class="fas fa-calendar me-1"></i> Ngày Đặt</th>
+                        <th><i class="fas fa-money-bill me-1"></i> Tổng Tiền</th>
+                        <th><i class="fas fa-info-circle me-1"></i> Trạng Thái</th>
+                        <th><i class="fas fa-cog me-1"></i> Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string statusClass = "badge-pending";
+                        string displayText = item.Status;
+                        bool canCancel = false;
+                        string statusIcon = "fa-clock";
+
+                        if (item.Status.Contains("xu ly") || item.Status.Contains("Pending") || item.Status.Contains("xử lý"))
+                        {
+                            statusClass = "badge-pending";
+                            displayText = "Chờ xử lý";
+                            canCancel = true;
+                            statusIcon = "fa-clock";
+                        }
+                        else if (item.Status.Contains("ang xu") || item.Status.Contains("Processing") || item.Status.Contains("xử lý"))
+                        {
+                            statusClass = "badge-processing";
+                            displayText = "Đang xử lý";
+                            statusIcon = "fa-cog";
+                        }
+                        else if (item.Status.Contains("giao") || item.Status.Contains("Shipped"))
+                        {
+                            statusClass = "badge-shipping";
+                            displayText = "Đang giao";
+                            statusIcon = "fa-truck";
+                        }
+                        else if (item.Status.Contains("thanh") || item.Status.Contains("Delivered"))
+                        {
+                            statusClass = "badge-completed";
+                            displayText = "Hoàn thành";
+                            statusIcon = "fa-check";
+                        }
+                        else if (item.Status.Contains("huy") || item.Status.Contains("Cancelled"))
+                        {
+                            statusClass = "badge-cancelled";
+                            displayText = "Đã hủy";
+                            statusIcon = "fa-times";
+                        }
+
+                        <tr>
+                            <td class="order-id">#@item.OrderId</td>
+                            <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td class="order-total">@item.TotalAmount.ToString("N0")đ</td>
+                            <td><span class="status-badge @statusClass"><i class="fas @statusIcon me-1"></i> @displayText</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <a href="@Url.Action("Details", new { id = item.OrderId })" class="btn-detail"><i class="fas fa-eye me-1"></i> Chi Tiết</a>
+                                    @if (canCancel)
+                                    {
+                                        <button type="button" class="btn-cancel" onclick="showCancelModal(@item.OrderId, @item.TotalAmount)">
+                                            <i class="fas fa-times-circle me-1"></i> Hủy Đơn
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- Single Cancel Modal -->
+<div class="modal fade modal-cancel" id="cancelOrderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Xác Nhận Hủy Đơn</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-icon"><i class="fas fa-exclamation-circle"></i></div>
+                <h5>Bạn muốn hủy đơn hàng #<span id="cancelOrderId"></span>?</h5>
+                <p class="mb-2">Tổng giá trị: <strong class="text-danger"><span id="cancelOrderTotal"></span>đ</strong></p>
+                <p class="text-muted small mb-0"><i class="fas fa-info-circle me-1"></i> Hành động này không thể hoàn tác.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-back" data-bs-dismiss="modal"><i class="fas fa-arrow-left me-1"></i> Quay Lại</button>
+                <form id="cancelForm" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-confirm"><i class="fas fa-check me-1"></i> Xác Nhận Hủy</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function showCancelModal(orderId, total) {
+            document.getElementById('cancelOrderId').textContent = orderId;
+            document.getElementById('cancelOrderTotal').textContent = total.toLocaleString('vi-VN');
+            document.getElementById('cancelForm').action = '@Url.Action("Cancel", "Orders")/' + orderId;
+            var modal = new bootstrap.Modal(document.getElementById('cancelOrderModal'));
+            modal.show();
+        }
+    </script>
+}
