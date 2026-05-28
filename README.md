@@ -73,6 +73,5 @@ To run this project locally, you will need:
 - [ ] Add unit tests and integration tests.
 
 ## 🤝 Contact
-- **JaaWuy** - [https://github.com/JaaWuy](https://github.com/JaaWuy)
-- **LinkedIn**: [Your LinkedIn Profile](https://linkedin.com/in/yourprofile)
-- **Email**: [your.email@example.com](mailto:your.email@example.com)
+- **JaaWuy** - [https://github.com/JaaWuy]
+- **Email**: [nguyenhuy.012005@gmail.com]
